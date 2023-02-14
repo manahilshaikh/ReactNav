@@ -1,0 +1,32 @@
+.navbar{
+    background-color: #1f5156;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 80px;
+    width: 100%;
+}
+.navcon ul li{
+    display: inline;
+    margin: 0px 20px;
+}
+.navcon ul li a{
+    text-decoration: none;
+    color: #fff;
+    font-size: 20px;
+    font-weight: bold;
+}
+.logo h3{
+    color: #f5b921;
+    font-size: 30px;
+    margin-left: 20px;
+}
+.navcon ul li a:hover{
+    border: 1px solid #f5b921;
+    padding: 5px;
+}
+
+
+
+
+
