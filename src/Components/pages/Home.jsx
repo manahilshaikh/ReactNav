@@ -1,21 +1,34 @@
 import React, { useState, useEffect } from "react";
-import { Grid, Card, CardContent, Button, TextField, Badge } from "@mui/material";
+import { Grid, Card, CardContent, Button, TextField, Badge} from "@mui/material";
 import axios from "axios";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+import { useNavigate } from "react-router-dom";
+import { addQuantity, handleAddQtay, handleRemove } from "../Utility";
+import RemoveIcon from "@mui/icons-material/Remove";
+import AddIcon from "@mui/icons-material/Add";
 export const Home = () => {
   const [data, setData] = useState([]);
   const [copyData,setCopyData]=useState([])
   const [addToCart,setAddToCart]=useState([])
+  const [category,setCategory] =useState ([])
+  const [search,setSearch] =useState('')
+  const navigate =useNavigate ()
+
+
+
 
   async function addData() {
     const getData = await axios.get("https://fakestoreapi.com/products");
-    setData(getData.data);
-    setCopyData(getData.data);
+    setData(addQuantity(getData.data));
+    setCopyData(addQuantity(getData.data));
+    const res =await axios .get ('https://fakestoreapi.com/products/categories')
+    setCategory([...res.data,"All"])
+  
     console.log(getData.data);
   }
 
   const handleAddtoCart=(item)=>{
-    const duplicateCart=addToCart.some((elem)=>elem.id==item.id)
+    const duplicateCart=addToCart.some((elem)=>elem.id==item)
       if(!duplicateCart){
         setAddToCart([...addToCart,item])
       }
@@ -34,28 +47,49 @@ export const Home = () => {
       setData(search)
     }
   }
+  const handleClick =(item)=>{
+    navigate("/detaile",{state:item})
+    console.log(item)
+  }
+ const handleIncrement=(id) =>{
+  const res =handleAddQtay(copyData,id)
+  setData(res)
+  setCopyData(res)
+ };
+
+ const handleDecrement=(id) =>{
+  const res =handleRemove(copyData,id)
+  setData(res)
+  setCopyData(res)
+ };
 
   useEffect(() => {
     addData();
   }, []);
-  return (
+  useEffect (()=>{
+    const searchData=copyData.filter((item)=>item.toUpperCase().inculdes(search.toUpperCase()))
+    setData(searchData)
+  console.log(search)
+  },[search])
+  // const res=handleAdd(data,2)
+
+
+   return (
     <div>
       <Grid container spacing={4} style={{ marginTop: 1 }}>
-        <Grid item xs={2} className="Button-container">
-          <Button variant="contained" onClick={()=>handleButtonSearch("men's clothing")}> Mens</Button>
+
+
+
+        {category.map((item)=>{
+          return (
+            <Grid item xs={item=="All"? 1: 2} className="Button-container">
+          <Button variant="contained" onClick={()=>handleButtonSearch(item)}>{item}</Button>
         </Grid>
-        <Grid item xs={2} className="Button-container">
-          <Button variant="contained" onClick={()=>handleButtonSearch("women's clothing")}>Womens</Button>
-        </Grid>
-        <Grid item xs={2} className="Button-container">
-          <Button variant="contained" onClick={()=>handleButtonSearch("electronics")}>Electric</Button>
-        </Grid>
-        <Grid item xs={2} className="Button-container">
-          <Button variant="contained" onClick={()=>handleButtonSearch("jewelery")}>Jewllory</Button>
-        </Grid>
-        <Grid item xs={1} className="Button-container">
-          <Button variant="contained" onClick={()=>handleButtonSearch("All")}>All</Button>
-        </Grid>
+
+          )
+        })}
+               
+        
         <Grid item xs={2} className="Button-container">
           <TextField label="search" fullWidth onChange={(e)=>handleFilter(e.target.value)}/>
         </Grid>
@@ -63,7 +97,6 @@ export const Home = () => {
         <Badge color="secondary" badgeContent={addToCart.length} showZero>
         <ShoppingCartIcon style={{ color: "#1976d2", fontSize: 40, cursor: "pointer" }}/>
         </Badge>
-          
         </Grid>
         {data.map((item, index) => {
           return (
@@ -81,8 +114,20 @@ export const Home = () => {
                     {item.title.length > 20 && "..."}
                   </h3>
                   <h4>Price : ${item.price}</h4>
-                  <Button variant="contained" color="error">
-                    Detail
+                  <h2>
+            <span  >
+              <RemoveIcon 
+               className="add" 
+        onClick={()=> item.userQuantity>0 &&  handleDecrement(item.id)}
+               />
+            </span>
+            {item.userQuantity}
+            <span>
+              <AddIcon  className="add" onClick={()=>handleIncrement(item.id)}/>
+            </span >
+          </h2>
+                  <Button variant="contained" color="error" onClick={()=>handleClick(item)}>
+                    Detaile
                   </Button>
                   <Button
                     variant="contained"

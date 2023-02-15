@@ -8,7 +8,7 @@ export const NavBar =() =>{
     return (
         <div className="navbar">
             <div className="logo">
-                <h3>Career Next</h3>
+                <h1>Shopping Cart</h1>
             </div>
             {/*logo Container closed*/}
             <div className="navcon">

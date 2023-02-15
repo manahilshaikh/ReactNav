@@ -16,7 +16,7 @@
     font-size: 20px;
     font-weight: bold;
 }
-.logo h3{
+.logo h1{
     color: #f5b921;
     font-size: 30px;
     margin-left: 20px;
@@ -24,6 +24,11 @@
 .navcon ul li a:hover{
     border: 1px solid #f5b921;
     padding: 5px;
+}
+.add{
+    background-color: brown;
+
+    margin: 0px 10px;
 }
 
 
